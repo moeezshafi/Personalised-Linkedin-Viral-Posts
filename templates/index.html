@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSZ - LinkedIn Content</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: #0f172a;
+        }
+        
+        .chat-message {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .loading-dots span {
+            animation: blink 1.4s infinite;
+        }
+        
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes blink {
+            0%, 60%, 100% {
+                opacity: 0.3;
+            }
+            30% {
+                opacity: 1;
+            }
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1em;
+        }
+        
+        .markdown-content strong {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-900 text-white flex flex-col">
+            <div class="p-6 border-b border-gray-800">
+                <h1 class="text-2xl font-bold">MSZ</h1>
+                <p class="text-sm text-gray-400 mt-1">LinkedIn Content AI</p>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-4">
+                <button onclick="newChat()" class="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 px-4 rounded-lg mb-4 transition">
+                    New Chat
+                </button>
+                
+                <div class="text-xs text-gray-500 space-y-2 mt-6">
+                    <div class="font-semibold text-gray-400 mb-2">Examples:</div>
+                    <button onclick="quickAction('ai')" class="w-full text-left px-3 py-2 hover:bg-gray-800 rounded transition text-xs">
+                        AI in Saudi Arabia
+                    </button>
+                    <button onclick="quickAction('startup')" class="w-full text-left px-3 py-2 hover:bg-gray-800 rounded transition text-xs">
+                        Startup lessons
+                    </button>
+                    <button onclick="quickAction('vision')" class="w-full text-left px-3 py-2 hover:bg-gray-800 rounded transition text-xs">
+                        Vision 2030 tech
+                    </button>
+                    <button onclick="quickAction('defense')" class="w-full text-left px-3 py-2 hover:bg-gray-800 rounded transition text-xs">
+                        Defense innovation
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-gray-800">
+                <div class="text-xs text-gray-500">
+                    <div class="mb-2">Status: <span class="text-green-400">Ready</span></div>
+                    <div>Target: Saudi Arabia</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="flex-1 flex flex-col bg-slate-900">
+            <!-- Header -->
+            <div class="bg-slate-800 border-b border-slate-700 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-semibold text-white">Content Generator</h2>
+                        <p class="text-sm text-slate-400">AI-powered LinkedIn content for Saudi professionals</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div id="chatContainer" class="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-900">
+                <!-- Welcome Message -->
+                <div class="chat-message max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Left: Instructions (1/3 width) -->
+                        <div class="bg-slate-800 rounded-lg shadow-xl p-4 border border-slate-700">
+                            <div class="text-center mb-3">
+                                <div class="text-3xl mb-2">🚀</div>
+                                <h3 class="text-base font-bold text-white">Create Viral Content</h3>
+                            </div>
+                            
+                            <div class="space-y-2 text-xs text-slate-400">
+                                <div>
+                                    <strong class="text-slate-300">Topic:</strong> Type a topic
+                                </div>
+                                <div>
+                                    <strong class="text-slate-300">Example:</strong> Paste any post
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right: Trending Ideas (2/3 width) -->
+                        <div class="md:col-span-2 bg-slate-800 rounded-lg shadow-xl p-4 border border-slate-700">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-sm font-semibold text-white">💡 Trending Ideas</h4>
+                                <button onclick="loadTrendingIdeas()" class="text-xs text-blue-400 hover:text-blue-300">
+                                    Refresh
+                                </button>
+                            </div>
+                            <div id="trendingIdeas" class="space-y-2">
+                                <div class="text-xs text-slate-400">Loading ideas...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <div class="bg-slate-800 border-t border-slate-700 p-4">
+                <div class="max-w-3xl mx-auto">
+                    <div class="flex gap-3">
+                        <textarea 
+                            id="chatInput"
+                            placeholder="What topic should I create a post about? (e.g., 'AI in Saudi Arabia', 'Startup lessons)"
+                            class="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 text-white placeholder-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                            rows="2"
+                            onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }"
+                        ></textarea>
+                        <button 
+                            onclick="sendMessage()"
+                            class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition self-end font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                        >
+                            Generate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let conversationHistory = [];
+        
+        function newChat() {
+            conversationHistory = [];
+            location.reload();
+        }
+        
+        function quickAction(action) {
+            const input = document.getElementById('chatInput');
+            const topics = {
+                'ai': "AI transformation in Saudi Arabia",
+                'startup': "Lessons from building startups in the Middle East",
+                'vision': "Vision 2030 and technology innovation",
+                'defense': "Defense technology and innovation in the region"
+            };
+            input.value = topics[action] || "";
+            input.focus();
+            sendMessage();
+        }
+        
+        function addMessage(type, content) {
+            const container = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message max-w-3xl mx-auto';
+            
+            if (type === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="flex justify-end">
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg px-5 py-3 max-w-2xl shadow-lg" style="white-space: pre-line;">
+                            ${escapeHtml(content)}
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'assistant') {
+                messageDiv.innerHTML = `
+                    <div class="bg-slate-800 rounded-lg shadow-xl p-6 border border-slate-700">
+                        <div class="markdown-content prose max-w-none text-slate-200" style="white-space: pre-line;">${formatMarkdown(content)}</div>
+                    </div>
+                `;
+            } else if (type === 'system') {
+                messageDiv.innerHTML = `
+                    <div class="text-center">
+                        <span class="inline-block bg-slate-800 text-slate-300 text-sm px-4 py-2 rounded-full border border-slate-700">
+                            ${content}
+                        </span>
+                    </div>
+                `;
+            }
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function showLoading() {
+            const container = document.getElementById('chatContainer');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'chat-message max-w-3xl mx-auto';
+            loadingDiv.id = 'loadingMessage';
+            loadingDiv.innerHTML = `
+                <div class="bg-slate-800 rounded-lg shadow-xl p-6 border border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="loading-dots flex gap-1">
+                            <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                            <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                            <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                        </div>
+                        <span class="text-slate-300">Generating your viral content...</span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(loadingDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function removeLoading() {
+            const loading = document.getElementById('loadingMessage');
+            if (loading) loading.remove();
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage('user', message);
+            input.value = '';
+            showLoading();
+            
+            conversationHistory.push({
+                role: 'user',
+                content: message
+            });
+            
+            // Detect if user pasted a long post (likely an example)
+            const isLongPost = message.length > 200 && message.includes('\n');
+            const endpoint = isLongPost ? '/generate-similar' : '/generate-post';
+            
+            try {
+                const response = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        topic: message,
+                        format_type: 'story'
+                    })
+                });
+                
+                const data = await response.json();
+                removeLoading();
+                
+                if (data.success) {
+                    if (isLongPost) {
+                        addMessage('system', '✨ Generated similar post with same structure');
+                    }
+                    addMessage('assistant', data.post);
+                    conversationHistory.push({
+                        role: 'assistant',
+                        content: data.post
+                    });
+                } else {
+                    addMessage('system', 'Error: ' + (data.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                removeLoading();
+                addMessage('system', 'Error: ' + error.message);
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function formatMarkdown(text) {
+            text = escapeHtml(text);
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-400">$1</strong>');
+            text = text.replace(/\n/g, '<br>');
+            text = text.replace(/(#\w+)/g, '<span class="text-blue-400 font-medium">$1</span>');
+            return text;
+        }
+        
+        async function loadTrendingIdeas() {
+            const container = document.getElementById('trendingIdeas');
+            container.innerHTML = '<div class="text-xs text-slate-400">Loading...</div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/trending-ideas`);
+                const data = await response.json();
+                
+                if (data.success && data.ideas) {
+                    let html = '';
+                    data.ideas.forEach((idea, index) => {
+                        const safeIdea = idea.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        html += `
+                            <button 
+                                onclick="useIdea('${safeIdea}')"
+                                class="w-full text-left px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs text-slate-300 transition"
+                            >
+                                ${index + 1}. ${idea}
+                            </button>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="text-xs text-slate-400">No ideas available</div>';
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="text-xs text-red-400">Error loading ideas</div>';
+            }
+        }
+        
+        function useIdea(idea) {
+            const input = document.getElementById('chatInput');
+            input.value = idea;
+            input.focus();
+            // Auto-generate after a short delay
+            setTimeout(() => {
+                sendMessage();
+            }, 100);
+        }
+        
+        // Load trending ideas on page load
+        loadTrendingIdeas();
+    </script>
+</body>
+</html>

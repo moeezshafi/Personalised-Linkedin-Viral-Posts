@@ -1,0 +1,86 @@
+========================================
+MSZ - GITHUB SETUP GUIDE
+========================================
+
+Follow these steps to push your project to GitHub:
+
+STEP 1: CREATE GITHUB REPO
+---------------------------
+1. Go to https://github.com/new
+2. Repository name: msz-content-generator
+3. Description: AI-powered LinkedIn content generator for viral posts
+4. Choose: Public or Private
+5. DO NOT initialize with README (we already have one)
+6. Click "Create repository"
+
+
+STEP 2: INITIALIZE GIT (if not already done)
+---------------------------------------------
+Open terminal in your project folder and run:
+
+git init
+git add .
+git commit -m "Initial commit: MSZ LinkedIn Content Generator"
+
+
+STEP 3: CONNECT TO GITHUB
+--------------------------
+Replace YOUR_USERNAME with your GitHub username:
+
+git remote add origin https://github.com/YOUR_USERNAME/msz-content-generator.git
+git branch -M main
+git push -u origin main
+
+
+STEP 4: VERIFY
+--------------
+1. Go to your GitHub repo
+2. You should see all files EXCEPT:
+   - .env (hidden - contains API key)
+   - msz_data.db (hidden - database)
+   - __pycache__/ (hidden - Python cache)
+
+
+STEP 5: SETUP FOR OTHERS
+-------------------------
+Anyone who clones your repo should:
+
+1. Clone the repo:
+   git clone https://github.com/YOUR_USERNAME/msz-content-generator.git
+
+2. Install dependencies:
+   pip install -r requirements.txt
+
+3. Create .env file:
+   Copy .env.example to .env
+   Add their OpenAI API key
+
+4. Train the model:
+   python complete_training.py
+
+5. Run the app:
+   python main.py
+
+
+IMPORTANT NOTES:
+----------------
+✅ .env is in .gitignore - Your API key is SAFE
+✅ Database is in .gitignore - Won't be pushed
+✅ README.md is included - Good documentation
+✅ .env.example is included - Shows what's needed
+
+SECURITY:
+---------
+- NEVER commit .env file
+- NEVER share your OpenAI API key
+- If you accidentally push .env, regenerate your API key immediately
+
+
+OPTIONAL: ADD GITHUB TOPICS
+----------------------------
+On your GitHub repo page:
+1. Click "Add topics"
+2. Add: ai, linkedin, content-generator, openai, gpt4, saudi-arabia, fastapi
+
+
+That's it! Your project is now on GitHub! 🚀
