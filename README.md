@@ -120,9 +120,9 @@ MIT License
 
 ## Author
 
-Muhammad Saad Zaheer
-- LinkedIn: [Your LinkedIn]
+Moeez Shafi
 - GitHub: [@moeezshafi](https://github.com/moeezshafi)
+- LinkedIn: [Connect with me](https://www.linkedin.com/in/moeezshafi)
 
 ## Contributing
 
